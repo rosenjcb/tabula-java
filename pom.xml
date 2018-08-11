@@ -295,14 +295,22 @@
 			<artifactId>jbig2-imageio</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-
 		<dependency>
-			<artifactId>pdf_extract</artifactId>
-			<groupId>pdf_extract</groupId>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/pdf_extract-0.1.jar</systemPath>
-			<version>1</version>
-		</dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.4.5</version>
+        </dependency>
+		
 	</dependencies>
 
 </project>
