@@ -8,4 +8,7 @@ import technology.tabula.Table;
 public interface Writer {
     void write(Appendable out, Table table) throws IOException;
     void write(Appendable out, List<Table> tables) throws IOException;
+    default void setColumnData(List<String[]> columnData){
+    	
+    }
 }

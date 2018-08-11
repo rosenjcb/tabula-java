@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
+import com.pdfextract.util.Util;
+
+import lombok.Setter;
 import technology.tabula.RectangularTextContainer;
 import technology.tabula.Table;
 
 public class CSVWriter implements Writer {
 
+	@Setter
+	private List<String[]> columnData;
+	
 	public CSVWriter() {
 		this(CSVFormat.EXCEL);
 	}
@@ -38,6 +44,9 @@ public class CSVWriter implements Writer {
 					printer.printRecord(cells);
 				}
 			}
+			printer.flush();
+			
+			Util.write(printer, out, columnData);
 			printer.flush();
 		}
 	}

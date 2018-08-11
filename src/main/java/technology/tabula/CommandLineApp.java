@@ -2,23 +2,26 @@ package technology.tabula;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+
+import com.pdfextract.common.ExtractSections;
+import com.pdfextract.common.Layout;
+import com.pdfextract.util.Util;
 
 import technology.tabula.detectors.DetectionAlgorithm;
 import technology.tabula.detectors.NurminenDetectionAlgorithm;
@@ -106,6 +109,8 @@ public class CommandLineApp {
         if (!pdfFile.exists()) {
             throw new ParseException("File does not exist");
         }
+        //HACK:
+        columnData = Util.extractFromPdfExtract(pdfFile, defaultOutput);
         extractFileTables(line, pdfFile);
     }
 
@@ -190,9 +195,10 @@ public class CommandLineApp {
                 System.out.println("Error in closing pdf document" + e);
             }
         }
+        
     }
 
-    private PageIterator getPageIterator(PDDocument pdfDocument) throws IOException {
+	private PageIterator getPageIterator(PDDocument pdfDocument) throws IOException {
         ObjectExtractor extractor = new ObjectExtractor(pdfDocument);
         return (pages == null) ?
                 extractor.extract() :
@@ -431,6 +437,7 @@ public class CommandLineApp {
             // TODO add useLineReturns
             return mixedExtractionAlgorithm.extract(page);
         }
+
     }
 
     private void writeTables(List<Table> tables, Appendable out) throws IOException {
@@ -438,6 +445,7 @@ public class CommandLineApp {
         switch (outputFormat) {
             case CSV:
                 writer = new CSVWriter();
+                writer.setColumnData(columnData);
                 break;
             case JSON:
                 writer = new JSONWriter();
@@ -446,7 +454,9 @@ public class CommandLineApp {
                 writer = new TSVWriter();
                 break;
         }
+        
         writer.write(out, tables);
+
     }
 
     private String getOutputFilename(File pdfFile) {
@@ -500,4 +510,6 @@ public class CommandLineApp {
             }
         }
     }
+    
+    private List<String[]> columnData;
 }
