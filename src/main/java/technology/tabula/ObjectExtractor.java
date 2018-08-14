@@ -72,7 +72,7 @@ public class ObjectExtractor {
         this.pdfDocument.close();
     }
 
-    public String extract1(){
+    public String extract1(List<Table> tables){
         System.out.println("&&***********Util.extractFromPdfExtract***************");
         List<String[]> ss = Util.extractFromPdfExtract(pdfDocument);
 		try (StringWriter sw = new StringWriter();
