@@ -19,7 +19,7 @@ import technology.tabula.Table;
 
 public class Util {
 
-	public static String extractFromPdfExtract(PDDocument pdfDocument, List<String> tables, String layoutStr) {
+	public static String extractCsvFromPdfExtract(PDDocument pdfDocument, List<String> tables, String layoutStr) {
 		ExtractSections extractSections = new ExtractSections();
 		//Layout layout = ExtractSections.loadYaml("ccl_layout.yaml");
 		try {

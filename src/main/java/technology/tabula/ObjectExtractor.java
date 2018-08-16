@@ -72,8 +72,39 @@ public class ObjectExtractor {
         this.pdfDocument.close();
     }
 
-    public String extract1(List<String> tables, String layout){
+    public String extractCsv(List<String> tables, String layout, int specIndex){
         System.out.println("&&***********layout***************&&" + layout);
-        return Util.extractFromPdfExtract(pdfDocument, tables, layout);
+        return Util.extractCsvFromPdfExtract(pdfDocument, tables, layout);
     }
+    
+    public String extractJson(List<String> tables, String layout){
+        System.out.println("&&***********layout***************&&" + layout);
+        /*# start JSON array
+        res.write  "["
+        tables.each_with_index do |table, index|
+          res.write ", " if index > 0
+          res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
+        end
+
+        # end JSON array
+        res.write "]"*/
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("[");
+        
+        int index = 0;
+        for(String table : tables){
+        	if(index > 0){
+        		sb.append(", ");
+        	}
+        	
+        	sb.append(table + ", \"spec_index\": " + 0 + "}");
+        	index++;
+        }
+        sb.append("]");
+        return sb.toString();
+
+        //return Util.extractJsonFromPdfExtract(pdfDocument, tables, layout);
+    }
+
 }
