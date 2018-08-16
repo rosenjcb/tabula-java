@@ -72,31 +72,8 @@ public class ObjectExtractor {
         this.pdfDocument.close();
     }
 
-    public String extract1(List<Table> tables){
-        System.out.println("&&***********Util.extractFromPdfExtract***************");
-        List<String[]> ss = Util.extractFromPdfExtract(pdfDocument);
-		try (StringWriter sw = new StringWriter();
-	            BufferedWriter writer = new BufferedWriter(sw);
-				CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);) {
-				writeCsv(csvPrinter, "test file", ss );
-				return sw.toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    	return "";
+    public String extract1(List<String> tables, String layout){
+        System.out.println("&&***********layout***************&&" + layout);
+        return Util.extractFromPdfExtract(pdfDocument, tables, layout);
     }
-
-	private static void writeCsv(CSVPrinter csvPrinter, String fileName, List<String[]> list) throws IOException {
-
-		for (String[] detail : list) {
-			LinkedList<String> list1 = new LinkedList<>();
-			list1.add(fileName);
-			list1.addAll(Arrays.asList(detail));
-			csvPrinter.printRecord(list1);
-		}
-		csvPrinter.flush();
-	}
-
 }
