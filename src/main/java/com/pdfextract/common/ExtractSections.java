@@ -1,7 +1,6 @@
 package com.pdfextract.common;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,16 +15,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class ExtractSections {
 
-	public List<String[]> convertToCsv(InputStream in, Layout layout) throws FileNotFoundException, IOException {
-
-		try (PDDocument document = PDDocument.load(in)) {
-
-			return extractData(document, layout);
-		}
-	}
-
 	public List<String[]> extractData( PDDocument document, Layout layout) throws IOException {
-		String []sections = layout.getSections();
+		Section []sections = layout.getSections();
 		List<LineDetails> data = null;
 		if(layout.getTwoColumns()){
 			TwoColumnTextStripper stripper = PdfUtil.extractPDF(document, layout);
@@ -78,16 +69,16 @@ public class ExtractSections {
 		return data1;
 	}
 
-	private short checkSectionChange(short flag, String[] sections, LineDetails ln) {
+	private short checkSectionChange(short flag, Section[] sections, LineDetails ln) {
 		
-		if ((flag == -2 || flag == sections.length || flag == 1) && patternMatch(sections[0], ln)) {
+		if ((flag == -2 || flag == sections.length || flag == 1) && patternMatch(sections[0].getRegex(), ln)) {
 			return 1;
 		}
 		for(short i = 1; i <= sections.length; i++){
-			if(i < 2 && (flag == 1 && patternMatch(sections[1], ln))) {
+			if(i < 2 && (flag == 1 && patternMatch(sections[1].getRegex(), ln))) {
 				//System.out.println(" secondSection=" + secondSection + " Actualline=" + line);
 				return 2;
-			} else if ((flag == (i-2) || flag == (i-1)) && patternMatch(sections[i-1], ln)) {
+			} else if ((flag == (i-2) || flag == (i-1)) && patternMatch(sections[i-1].getRegex(), ln)) {
 				//System.out.println(" thirdSection=" + thirdSection + " Actualline=" + line);
 				return i;
 			}

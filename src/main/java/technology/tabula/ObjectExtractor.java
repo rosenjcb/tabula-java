@@ -1,16 +1,16 @@
 package technology.tabula;
 
-import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.pdfextract.util.Util;
 
@@ -72,22 +72,13 @@ public class ObjectExtractor {
         this.pdfDocument.close();
     }
 
-    public String extractCsv(List<String> tables, String layout, int specIndex){
+    public String extractCsv(List<String> tables, String layout){
         System.out.println("&&***********layout***************&&" + layout);
         return Util.extractCsvFromPdfExtract(pdfDocument, tables, layout);
     }
     
     public String extractJson(List<String> tables, String layout){
-        System.out.println("&&***********layout***************&&" + layout);
-        /*# start JSON array
-        res.write  "["
-        tables.each_with_index do |table, index|
-          res.write ", " if index > 0
-          res.write table.to_json[0...-1] + ", \"spec_index\": #{table.spec_index}}"
-        end
-
-        # end JSON array
-        res.write "]"*/
+        /*System.out.println("&&***********layout***************&&" + layout);
         StringBuffer sb = new StringBuffer();
         
         sb.append("[");
@@ -102,9 +93,18 @@ public class ObjectExtractor {
         	index++;
         }
         sb.append("]");
-        return sb.toString();
+        return sb.toString();*/
+        
+		/*try {
+			InputStream is = new FileInputStream("sample-preview.json");
+			return IOUtils.toString(is);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return "";*/
 
-        //return Util.extractJsonFromPdfExtract(pdfDocument, tables, layout);
+    	return Util.extractColumnData(pdfDocument, tables, layout);
     }
-
 }

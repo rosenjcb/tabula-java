@@ -6,7 +6,7 @@ import lombok.Data;
 public class Layout {
 	
 	private String tableDelimiter;
-	private String[] sections;
+	private Section[] sections;
 	private Integer rightStartX;
 	private Integer leftStartX;
 	private Integer startY;
