@@ -3,6 +3,7 @@ package com.pdfextract.util;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,36 +21,24 @@ import com.pdfextract.common.ExtractSections;
 import com.pdfextract.common.Layout;
 import com.pdfextract.common.Section;
 
-import technology.tabula.Table;
+import lombok.val;
 
 public class Util {
 
 	public static String extractCsvFromPdfExtract(PDDocument pdfDocument, List<String> tables, String layoutStr) {
-		ExtractSections extractSections = new ExtractSections();
 		// Layout layout = ExtractSections.loadYaml("ccl_layout.yaml");
-		try {
-			ObjectMapper m = new ObjectMapper();
-			Layout layout = m.readValue(layoutStr, Layout.class);
-
-			List<String[]> ss = extractSections.extractData(pdfDocument, layout);
-
-			try (StringWriter sw = new StringWriter();
-					BufferedWriter writer = new BufferedWriter(sw);
-					CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);) {
-				writeCsv(csvPrinter, "test file", ss, tables);
-				return sw.toString();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return "";
-
+		try (StringWriter sw = new StringWriter();
+				BufferedWriter writer = new BufferedWriter(sw);
+				CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);) {
+			csvData(pdfDocument, tables, layoutStr, csvPrinter);
+			// writeCsv(csvPrinter, "test file", ss, tables);
+			return sw.toString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return "";
+
 	}
 
 	public static String extractColumnData(PDDocument pdfDocument, List<String> tables, String layoutStr) {
@@ -66,6 +55,53 @@ public class Util {
 		root.put("data", data);
 		root.put("spec_index", "0");
 		return arr.toJSONString();
+	}
+
+	private static String csvData(PDDocument pdfDocument, List<String> tables, String layoutStr,
+			CSVPrinter csvPrinter) {
+		try {
+			ExtractSections extractSections = new ExtractSections();
+			ObjectMapper m = new ObjectMapper();
+			Layout layout = m.readValue(layoutStr, Layout.class);
+
+			val arrItem = new ArrayList<String>();
+
+			val sections = layout.getSections();
+
+			for (Section columnHeader : sections) {
+				arrItem.add(columnHeader.getName());
+			}
+
+			csvPrinter.printRecord(arrItem);
+
+			val ss = extractSections.extractData(pdfDocument, layout);
+			System.out.println("ss.size()=" + ss.size() + "tables.size()=" + tables.size());
+
+			for (int i = 0; i < ss.size(); i++) {
+				val arrItem1 = new ArrayList<String>();
+				String[] row = ss.get(i);
+				for (int j = 0; j < row.length; j++) {
+					Section s = sections[j];
+					if (!s.getIsTabular()) {
+						arrItem1.add(row[j]);
+					} else {
+						if (i < tables.size()) {
+							JSONParser parser = new JSONParser();
+							JSONObject item1 = (JSONObject) parser.parse(tables.get(i) + "}");
+
+							arrItem1.add(getJsonDataString((JSONArray) item1.get("data")));
+						} else {
+							arrItem1.add("data");
+						}
+					}
+				}
+				csvPrinter.printRecord(arrItem1);
+			}
+		} catch (IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private static JSONArray jsonData(PDDocument pdfDocument, List<String> tables, String layoutStr) {
@@ -109,10 +145,10 @@ public class Util {
 					if (!s.getIsTabular()) {
 						arrItem1.add(item);
 					} else {
-						if(i < tables.size()){
+						if (i < tables.size()) {
 							JSONParser parser = new JSONParser();
 							JSONObject item1 = (JSONObject) parser.parse(tables.get(i) + "}");
-	
+
 							item.put("text", getJsonDataString((JSONArray) item1.get("data")));
 						} else {
 							item.put("text", "data");
