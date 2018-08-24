@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class SingleColumnTextStripper extends PDFTextStripper {
+public class SingleColumnTextStripper extends TextStripper {
 
 	/*private final int rightStartX = 640;
 	private final int startY = 100;
@@ -21,6 +21,7 @@ public class SingleColumnTextStripper extends PDFTextStripper {
 
 	public static final String tableDelimiter = "#####";*/
 	
+	@Setter
 	private Layout layout;
 
 	@Getter
@@ -28,9 +29,8 @@ public class SingleColumnTextStripper extends PDFTextStripper {
 
 	private ArrayList<LineDetails> pageLeftData = new ArrayList<>();
 
-	public SingleColumnTextStripper(Layout layout) throws IOException {
+	public SingleColumnTextStripper() throws IOException {
 		super();
-		this.layout = layout;
 	}
 
 	@Override

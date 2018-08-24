@@ -15,17 +15,13 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class ExtractSections {
 
-	public List<String[]> extractData( PDDocument document, Layout layout) throws IOException {
-		Section []sections = layout.getSections();
+	public List<String[]> extractData(PDDocument document, Layout layout) throws IOException {
+		Section[] sections = layout.getSections();
 		List<LineDetails> data = null;
-		if(layout.getTwoColumns()){
-			TwoColumnTextStripper stripper = PdfUtil.extractPDF(document, layout);
-			data = stripper.getData();
-		} else {
-			SingleColumnTextStripper stripper = PdfUtil.extractPDFWithSingleColumn(document, layout);	
-			data = stripper.getData();
-		}
-		
+
+		TextStripper stripper = PdfUtil.extractPDF(document, layout);
+		data = stripper.getData();
+
 		ArrayList<String[]> data1 = new ArrayList<>();
 		String[] eccnDetail = null;
 
@@ -51,14 +47,14 @@ public class ExtractSections {
 			if (eccnDetail != null) {
 				String line = cleanse(
 						ln.getLine().trim().equals("") ? "\n" : ln.getLine().trim().replaceAll("\"", "\'"));
-				
-				for(short i = 1; i <= sections.length; i++){
+
+				for (short i = 1; i <= sections.length; i++) {
 					if (flag == i) {
-						String summary = eccnDetail[i-1];
+						String summary = eccnDetail[i - 1];
 						String summary1 = summary != null ? summary : "";
-						eccnDetail[i-1] = summary1 + "\n" + line;
+						eccnDetail[i - 1] = summary1 + "\n" + line;
 						break;
-					}						
+					}
 				}
 
 			}
@@ -70,16 +66,18 @@ public class ExtractSections {
 	}
 
 	private short checkSectionChange(short flag, Section[] sections, LineDetails ln) {
-		
+
 		if ((flag == -2 || flag == sections.length || flag == 1) && patternMatch(sections[0].getRegex(), ln)) {
 			return 1;
 		}
-		for(short i = 1; i <= sections.length; i++){
-			if(i < 2 && (flag == 1 && patternMatch(sections[1].getRegex(), ln))) {
-				//System.out.println(" secondSection=" + secondSection + " Actualline=" + line);
+		for (short i = 1; i <= sections.length; i++) {
+			if (i < 2 && (flag == 1 && patternMatch(sections[1].getRegex(), ln))) {
+				// System.out.println(" secondSection=" + secondSection + "
+				// Actualline=" + line);
 				return 2;
-			} else if ((flag == (i-2) || flag == (i-1)) && patternMatch(sections[i-1].getRegex(), ln)) {
-				//System.out.println(" thirdSection=" + thirdSection + " Actualline=" + line);
+			} else if ((flag == (i - 2) || flag == (i - 1)) && patternMatch(sections[i - 1].getRegex(), ln)) {
+				// System.out.println(" thirdSection=" + thirdSection + "
+				// Actualline=" + line);
 				return i;
 			}
 		}
@@ -91,11 +89,11 @@ public class ExtractSections {
 		// TODO Auto-generated method stub
 		String line = ln.getLine();
 		String[] split = pattern.split("#####");
-		if(split.length == 1){
+		if (split.length == 1) {
 			return Pattern.matches(pattern, line);
-		} else{
+		} else {
 			boolean a = Pattern.matches(split[0], line);
-			if(ln.getFont() != null){
+			if (ln.getFont() != null) {
 				boolean b = ln.getFont().getName().contains(split[1]);
 				return a && b;
 			}
@@ -125,7 +123,7 @@ public class ExtractSections {
 		}
 		return "";
 	}
-	
+
 	public static Layout loadYaml(String file) {
 		Layout layout = null;
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

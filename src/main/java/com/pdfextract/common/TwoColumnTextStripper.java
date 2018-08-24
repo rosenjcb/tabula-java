@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class TwoColumnTextStripper extends PDFTextStripper {
+public class TwoColumnTextStripper extends TextStripper {
 
 	/*private final int rightStartX = 320;
 	private final int startY = 90;
@@ -26,11 +26,12 @@ public class TwoColumnTextStripper extends PDFTextStripper {
 
 	private ArrayList<LineDetails> pageLeftData = new ArrayList<>();
 	private ArrayList<LineDetails> pageRightData = new ArrayList<>();
+	
+	@Setter
 	private Layout layout;
 
-	public TwoColumnTextStripper(Layout layout) throws IOException {
+	public TwoColumnTextStripper() throws IOException {
 		super();
-		this.layout = layout;
 	}
 
 	@Override

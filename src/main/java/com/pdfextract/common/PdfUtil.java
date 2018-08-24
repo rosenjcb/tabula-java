@@ -9,25 +9,25 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 public class PdfUtil {
 
-	public static TwoColumnTextStripper extractPDF(PDDocument document, Layout layout) throws IOException {
-		TwoColumnTextStripper stripper = new TwoColumnTextStripper(layout);
-		stripper.setSortByPosition(true);
-		stripper.setStartPage(0);
-		stripper.setEndPage(document.getNumberOfPages());
+	public static TextStripper extractPDF(PDDocument document, Layout layout) throws IOException {
+		TextStripper stripper;
+		try {
+			System.out.println("***" + layout.getStripperStrategy());
+			stripper = (TextStripper) Class.forName(layout.getStripperStrategy()).newInstance();
+			stripper.setLayout(layout);
 
-		Writer writer1 = new OutputStreamWriter(new ByteArrayOutputStream());
-		stripper.writeText(document, writer1);
-		return stripper;
+			stripper.setSortByPosition(true);
+			stripper.setStartPage(0);
+			stripper.setEndPage(document.getNumberOfPages());
+
+			Writer writer1 = new OutputStreamWriter(new ByteArrayOutputStream());
+			stripper.writeText(document, writer1);
+			return stripper;
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	public static SingleColumnTextStripper extractPDFWithSingleColumn(PDDocument document, Layout layout) throws IOException {
-		SingleColumnTextStripper stripper = new SingleColumnTextStripper(layout);
-		stripper.setSortByPosition(true);
-		stripper.setStartPage(0);
-		stripper.setEndPage(document.getNumberOfPages());
-
-		Writer writer1 = new OutputStreamWriter(new ByteArrayOutputStream());
-		stripper.writeText(document, writer1);
-		return stripper;
-	}
 }

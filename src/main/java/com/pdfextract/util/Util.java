@@ -83,7 +83,11 @@ public class Util {
 				for (int j = 0; j < row.length; j++) {
 					Section s = sections[j];
 					if (!s.getIsTabular()) {
-						arrItem1.add(row[j]);
+						if(row[j] != null){
+							arrItem1.add(row[j].replace("\n", "").replace("\r", ""));
+						} else {
+							arrItem1.add(" ");
+						}
 					} else {
 						if (i < tables.size()) {
 							JSONParser parser = new JSONParser();
