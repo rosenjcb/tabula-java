@@ -78,33 +78,9 @@ public class ObjectExtractor {
     }
     
     public String extractJson(List<String> tables, String layout){
-        /*System.out.println("&&***********layout***************&&" + layout);
-        StringBuffer sb = new StringBuffer();
-        
-        sb.append("[");
-        
-        int index = 0;
-        for(String table : tables){
-        	if(index > 0){
-        		sb.append(", ");
-        	}
-        	
-        	sb.append(table + ", \"spec_index\": " + 0 + "}");
-        	index++;
-        }
-        sb.append("]");
-        return sb.toString();*/
-        
-		/*try {
-			InputStream is = new FileInputStream("sample-preview.json");
-			return IOUtils.toString(is);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        return "";*/
+        System.out.println("&&***********layout***************&&" + layout);
+        System.out.println("&&***********tables***************&&" + tables);
 
-    	return Util.extractColumnData(pdfDocument, tables, layout);
+    	return Util.extractJsonFromPdfExtract(pdfDocument, tables, layout);
     }
 }
