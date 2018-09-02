@@ -79,7 +79,7 @@ public class ObjectExtractor {
     
     public String extractJson(List<String> tables, String layout){
         System.out.println("&&***********layout***************&&" + layout);
-        System.out.println("&&***********tables***************&&" + tables);
+        //System.out.println("&&***********tables***************&&" + tables);
 
     	return Util.extractJsonFromPdfExtract(pdfDocument, tables, layout);
     }
